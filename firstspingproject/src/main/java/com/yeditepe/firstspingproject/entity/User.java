@@ -4,6 +4,8 @@ package com.yeditepe.firstspingproject.entity;
 import jakarta.persistence.*;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -16,8 +18,18 @@ public class User {
     private String username;
     private String password;
     public String email;
-
-
+    @OneToOne(mappedBy = "owner",
+    fetch = FetchType.LAZY,
+    cascade = CascadeType.ALL)
+    public UserProfile userProfile;
+    @OneToMany(mappedBy = "author")
+    Set<Post> posts;
+    @ManyToMany
+    @JoinTable(name="UserCommunity",
+    joinColumns = @JoinColumn(name="user_id"),
+    inverseJoinColumns = @JoinColumn(name="c_id")
+    )
+    Set<Community> communities;
     //All entities must have no arg constructor
     public User() {
     }
@@ -59,5 +71,29 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
+    public Set<Community> getCommunities() {
+        return communities;
+    }
+
+    public void setCommunities(Set<Community> communities) {
+        this.communities = communities;
     }
 }
